@@ -360,7 +360,9 @@ Ngày 18/11/2026: smoke M0 PASS; v1/v2 0 problem; **104 test Lab 9 PASS và 3 te
 
 Trợ lý thực hiện: commit phần còn lại trên starter/d09, push lên origin, tạo PR starter/d09 → main trong chính fork, theo dõi hai job eval-gate/eval-gate-v2 và merge khi xanh. Không đẩy vào upstream của giảng viên, không force-push. Chỉ ghi hoàn tất CI/merge sau khi xác minh.
 
-Đang chuẩn bị commit/push. Kết nối GitHub plugin đang đăng xuất và Chrome chưa được cấp quyền điều khiển; đang dùng Git/API với xác thực Git sẵn có. Không ghi token hoặc mật khẩu ra log.
+Đã commit/push toàn bộ phần M5–M7 cùng report/tài liệu ở `a10ed2b8dc04c74f5ff9a21e0b06bceb1f8371a0`. Đã tạo [PR #1](https://github.com/NhMinh-2610/K5-L3B-DAY09-NguyenNhatMinh-2A202603745-EvaluationandFailureAnalysis/pull/1), base là main trong chính fork, kèm đủ bằng chứng theo SUBMISSION. Workflow eval-gate.yml đang active.
+
+Trợ lý dùng Git/API với xác thực Git sẵn có vì plugin đăng xuất và Chrome chưa được cấp quyền. Token không được ghi ra log. Tại thời điểm cập nhật này CI đang được theo dõi; chỉ merge khi hai job eval-gate và eval-gate-v2 của đúng revision đều success. Trạng thái CI/merge trực tiếp nằm ở PR #1, kết quả cuối được báo trong chat. Không ghi CI xanh hoặc merge trước khi có kết quả.
 
 ### Việc bạn còn cần làm khi main đã sẵn sàng
 
