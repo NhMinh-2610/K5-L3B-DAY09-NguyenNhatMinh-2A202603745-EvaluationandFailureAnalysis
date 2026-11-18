@@ -1,0 +1,10 @@
+gate: PR E-slice_regression-20261118-3560 vs main E-swarm-20261118-3560 · eval set 356024eacef2
+  INTEGRITY PR: row count does not equal manifest items x seeds
+  INTEGRITY PR: missing metric pass_hat_5
+  INTEGRITY PR: incomplete item x seed grid
+  INTEGRITY PR: undefined pass_at_3 for the row counts
+  INTEGRITY PR: undefined pass_hat_3 for the row counts
+  INTEGRITY PR: undefined pass_at_5 for the row counts
+  INTEGRITY PR: undefined pass_hat_5 for the row counts
+  INTEGRITY PR (item_id, seed) set differs from baseline
+exit 1 — blocked: integrity

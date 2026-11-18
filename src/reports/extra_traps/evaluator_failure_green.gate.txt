@@ -1,0 +1,3 @@
+gate: PR E-swarm-20261118-3560 vs main E-swarm-20261118-3560 · eval set 356024eacef2
+  INTEGRITY PR: evaluator_failures is missing or non-empty
+exit 1 — blocked: integrity

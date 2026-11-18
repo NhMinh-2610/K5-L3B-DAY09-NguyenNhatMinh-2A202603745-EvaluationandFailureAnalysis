@@ -1,5 +1,10 @@
 # Tiến độ Lab 9
 
+## Trạng thái hiện tại và quyền thực hiện
+
+Bạn đã yêu cầu trợ lý đưa bài lên main, kiểm tra phần còn thiếu và thực hiện. Yêu cầu này thay chỉ dẫn cũ tự làm Git: trợ lý được commit/push, tạo PR trong fork, theo dõi CI, sửa lỗi và merge khi xanh. Bạn đồng ý khôi phục tệp tiến độ đã bị xóa. Các mục phía dưới ghi lịch sử từng mốc; trạng thái xuất bản mới nhất được ghi cuối tệp.
+
+
 Tệp này ghi lại việc trợ lý đã làm thay bạn, việc bạn cần tự thực hiện và kết quả kiểm tra. Ngày cập nhật: 18/11/2026.
 
 ## Cách làm đã thống nhất
@@ -252,7 +257,7 @@ Các fingerprint `8b262652f4bf` ở mục M1/M3 ghi lại lần chạy CRLF trư
 - `src/reports/gate_pr.txt`, `gate_fixed.txt`, `gate_seeded_regression.txt`, `gate_m3_misreport.txt`: stdout nguyên bản của gate.
 - `src/reports/ci_check_local.txt`: xác nhận baseline/spec và metric riêng khớp yêu cầu trên máy.
 
-Bạn đã duyệt nội dung tài liệu Core và đồng ý commit M4, sau đó xuất bản Core lên GitHub trước. Trợ lý đang thực hiện đúng phạm vi đó; chỉ ghi CI xanh/merge sau khi đã xác minh trên GitHub. Các kiểm tra local không thay cho job `eval-gate` xanh mà đề yêu cầu. Chưa thực hiện M5–M7.
+Bạn đã duyệt nội dung tài liệu Core và đồng ý commit M4, sau đó xuất bản Core lên GitHub trước. Đây là ghi nhận tại mốc Core; trạng thái mới nhất ở cuối tệp. Các kiểm tra local không thay cho job `eval-gate` xanh mà đề yêu cầu. Chưa thực hiện M5–M7.
 
 ### Việc bạn cần làm sau M4
 
@@ -316,7 +321,7 @@ gate: PR E-seeded_regression-20261118-13a7 vs main E-swarm-20261118-13a7 · eval
 exit 1 — blocked: refund_amount_correct, reply_ledger_consistent, pass_rate
 ```
 
-Giới hạn: MockLLM, 14 item, judge replay công khai; chưa có dữ liệu người dùng thật/held-out mới. Advanced/Expert chưa triển khai. Job eval-gate cần được GitHub xác nhận trên PR trước khi merge.
+Giới hạn: MockLLM, 14 item, judge replay công khai; chưa có dữ liệu người dùng thật/held-out mới. Advanced/Expert chưa triển khai tại mốc Core này; phần bổ sung hiện đã hoàn thành local. Job eval-gate cần được GitHub xác nhận trên PR trước khi merge.
 <!-- CORE_PR_DRAFT_END -->
 
 ## Trạng thái các mốc
@@ -333,3 +338,33 @@ Giới hạn: MockLLM, 14 item, judge replay công khai; chưa có dữ liệu n
 | Nộp bài | Commit report, push, PR trong fork, CI xanh, merge main và nộp link trên LMS | Bạn đã cho phép xuất bản Core; nộp link LMS do bạn thực hiện |
 
 Không chỉnh sửa `src/lab8/` sau khi chép từ nguồn gốc; không sửa tay report; không đưa nhãn đáp án vào item. Chỉ sinh baseline sau khi đã hoàn thành các bước cần thiết của Core.
+
+
+## Hoàn tất M5–M7 trên máy
+
+Bạn đã đồng ý làm hết M5–M7. Trợ lý đã hoàn thành các phần sau, giữ nguyên mã Lab 8, variant/trap, workflow, test gốc và yêu cầu đề:
+
+- Điền tám mapping cơ chế sang FM; sinh v2 gồm 28 item và 28 nhãn riêng, SHA `356024eacef2`. V1 giữ SHA `13a7cc261af8`; cả hai check có 0 problem.
+- Cài slice gate, pass@k/pass^k, integrity check và ratchet; pass_hat_5 min 0.80 blocking. Money_movement min 0.95, adversarial min 0.90; không nới các sàn gốc.
+- A/A giữa hai bộ seed có Δ=0 ở cả 15 metric số. Baseline pass_rate 0.9786, pass^5 0.8929. Fixed và honest_refactor đạt 1.0, đều qua gate.
+- Scorecard gốc đạt 3/3 regression bị chặn, 0 báo nhầm. Slice_regression chỉ bị money_movement chặn; flaky có pass^5 0.5714 dưới sàn. Bốn trap công khai và bốn vector bổ sung đều bị chặn. Vector bổ sung không phải bộ chấm ẩn.
+- Report misreport v2 có 30/140 reply lệch ledger, bị metric FM-08 chặn dù pass_rate/refund 1.0. Quiet override không có event override vẫn bị outcome/slice chặn.
+- Script `src/lab9/advanced_evidence.py` sinh report/log, bảy trace đối chứng và `docs/PR_LAB9.md`; `src/reports/advanced_checks.json` ghi đủ 30 exit code đúng kỳ vọng. Không sửa tay report.
+- Hoàn thiện taxonomy v2, eval card, phụ lục PRD v1.1, harness_map 1.3 và AGENTS.md. Bản Word bổ sung `docs/Lab9_Experiment_Analysis.docx` dùng mẫu Experiment Analysis, bảy trang đã kiểm tra; đây là snapshot phân tích local trước xuất bản.
+
+### Kiểm tra lại trước xuất bản
+
+Ngày 18/11/2026: smoke M0 PASS; v1/v2 0 problem; **104 test Lab 9 PASS và 3 test CLI PASS**. Mã Lab 8, bộ gài lỗi và test gốc không đổi. Report mới cần force-add vì reports bị gitignore. Chưa chạy bộ chấm ẩn/key anchor. MockLLM và năm seed chưa chứng minh chất lượng LLM thật hay bắt ổn định bug chỉ xảy ra ở 1/3 seed.
+
+## Xuất bản lên GitHub theo yêu cầu mới
+
+Trợ lý thực hiện: commit phần còn lại trên starter/d09, push lên origin, tạo PR starter/d09 → main trong chính fork, theo dõi hai job eval-gate/eval-gate-v2 và merge khi xanh. Không đẩy vào upstream của giảng viên, không force-push. Chỉ ghi hoàn tất CI/merge sau khi xác minh.
+
+Đang chuẩn bị commit/push. Kết nối GitHub plugin đang đăng xuất và Chrome chưa được cấp quyền điều khiển; đang dùng Git/API với xác thực Git sẵn có. Không ghi token hoặc mật khẩu ra log.
+
+### Việc bạn còn cần làm khi main đã sẵn sàng
+
+1. Mở repo fork, chọn main và xác nhận có code, docs cùng hai baseline trong src/reports.
+2. Mở link PR/Actions được ghi ở phần kết quả bên dưới để xem CI và merge.
+3. Vào LMS đúng ca, mở bài nộp Lab 9, dán link repo fork và lưu/nộp trước hạn: https://github.com/NhMinh-2610/K5-L3B-DAY09-NguyenNhatMinh-2A202603745-EvaluationandFailureAnalysis.
+4. Nếu LMS yêu cầu xác nhận/chấm riêng hoặc giảng viên cấp key anchor/test ẩn, làm theo yêu cầu đó; không tự ghi đã đạt khi chưa có kết quả.

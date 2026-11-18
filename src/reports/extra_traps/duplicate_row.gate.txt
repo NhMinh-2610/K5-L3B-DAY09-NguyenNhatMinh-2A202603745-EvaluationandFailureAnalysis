@@ -1,0 +1,5 @@
+gate: PR E-swarm-20261118-3560 vs main E-swarm-20261118-3560 · eval set 356024eacef2
+  INTEGRITY PR: duplicate (item_id, seed) rows
+  INTEGRITY PR: incomplete item x seed grid
+  INTEGRITY PR (item_id, seed) set differs from baseline
+exit 1 — blocked: integrity

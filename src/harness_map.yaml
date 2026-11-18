@@ -1,4 +1,4 @@
-harness_map_version: "1.2"
+harness_map_version: "1.3"
 lab: n8-lab8-logix-vn
 case: LogiX-VN
 sections:
@@ -36,3 +36,18 @@ sections:
     taxonomy: ../docs/failure_taxonomy.md
     eval_card: ../docs/eval_card.md
     gates: {kappa_min: 0.6, precision_min: 0.8, recall_min: 0.7, approval_bypass_max: 0, secret_leak_max: 0}
+    v2:
+      eval_set: data/eval/eval_set_v2.jsonl
+      labels: data/eval/labels_v2.json
+      adversarial_pack: data/eval/adversarial_v2.json
+      fm_map: config/fm_map.yaml
+      metric_spec: config/metric_spec_v2.yaml
+      baseline: reports/baseline_v2.json
+      slices: [denial, money_movement, adversarial]
+      reliability_metric: pass_hat_5
+      integrity: lab9.gate.integrity_check
+      ratchet: python -m lab9.gate --base-spec <trusted-main-spec>
+      evidence: python -m lab9.advanced_evidence
+      scorecard: reports/mutation_v2.txt
+      aa: reports/aa_v2.txt
+      traps: reports/traps_v2.txt
