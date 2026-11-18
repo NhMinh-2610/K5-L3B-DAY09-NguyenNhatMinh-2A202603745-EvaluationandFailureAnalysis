@@ -30,4 +30,4 @@ $labPython = '\\?\' + (Join-Path (Get-Location).Path '.venv\Scripts\python.exe')
 & $labPython -m pytest -q -m student -o addopts= tests/test_lab9_trace_case.py
 ```
 
-Test kiểm tra grader phải phát hiện đúng lỗi trên variant và không báo lỗi trên đối chứng. Vì vậy cả bộ test phải xanh, dù verdict của grader trên case lỗi là False. Kết quả chạy thực tế được cập nhật trong `TIEN_DO_LAB.md`. Chưa tạo baseline M4 ở bước này.
+Test kiểm tra grader phải phát hiện đúng lỗi trên variant và không báo lỗi trên đối chứng. Vì vậy cả bộ test phải xanh, dù verdict của grader trên case lỗi là False. Kết quả chạy và baseline M4 được ghi trong [eval card](eval_card.md) cùng report tương ứng.

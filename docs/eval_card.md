@@ -138,9 +138,25 @@ Baseline và base-spec phải lấy từ nguồn main đáng tin khi áp dụng 
 
 Chạy từ `src/`: `python -m lab9.advanced_evidence` sinh toàn bộ report/log và [bằng chứng PR](PR_LAB9.md). [advanced_checks.json](../src/reports/advanced_checks.json) ghi đủ **30 lệnh kiểm chứng với exit code mong đợi**. Bộ test đạt **104 test Lab 9** (61 Core + 43 Advanced), cùng **3 test CLI eval set**. Gate v1 chạy lại sau M7 vẫn cho qua swarm/fixed và chặn seeded_regression đúng pass_rate.
 
-V2 vẫn chỉ có 28 item và năm seed cố định. Bug chỉ xuất hiện ở 1/3 seed không được phát hiện ổn định với năm seed; không hạ ngưỡng để buộc bắt nó. A/A=0 của MockLLM không chứng minh model thật không có nhiễu. Chưa chạy key anchor hoặc biến thể/trap ẩn; chưa có dữ liệu production. Phần xuất bản đã được xác minh bên dưới; chủ fork còn nộp LMS theo [tiến độ và hướng dẫn](../TIEN_DO_LAB.md).
+V2 vẫn chỉ có 28 item và năm seed cố định. Bug chỉ xuất hiện ở 1/3 seed không được phát hiện ổn định với năm seed; không hạ ngưỡng để buộc bắt nó. A/A=0 của MockLLM không chứng minh model thật không có nhiễu. Chưa chạy key anchor hoặc biến thể/trap ẩn; chưa có dữ liệu production. Phần xuất bản đã được xác minh bên dưới; chủ fork còn nộp LMS theo [hướng dẫn nộp bài](../SUBMISSION.md).
 
 
 ## Kết quả GitHub đã xác minh
 
 [PR #1](https://github.com/NhMinh-2610/K5-L3B-DAY09-NguyenNhatMinh-2A202603745-EvaluationandFailureAnalysis/pull/1) đã merge vào main, commit `d19bd2f3ca4ef5b851d2603677035dee21de3051`. [Workflow run 44275184381](https://github.com/NhMinh-2610/K5-L3B-DAY09-NguyenNhatMinh-2A202603745-EvaluationandFailureAnalysis/actions/runs/44275184381) success trên head `f25c99151fef9ab33947b4ed7c0a2e22ca567658`; detect, eval-gate và eval-gate-v2 đều completed/success. Đây là kết quả GitHub thực tế, bổ sung cho số liệu local. Trợ lý thực hiện xuất bản theo yêu cầu mới; chủ fork vẫn cần nộp LMS.
+
+
+## Chạy trên Windows có đường dẫn dài
+
+Mở PowerShell ở thư mục gốc repo. Tiền tố đường dẫn mở rộng giúp gọi Python trong môi trường riêng khi đường dẫn OneDrive dài:
+
+```powershell
+cd src
+$labPython = '\\?\' + (Join-Path (Get-Location).Path '.venv\Scripts\python.exe')
+& $labPython -X utf8 -m lab9.smoke
+& $labPython -X utf8 -m lab9.evalset --check
+& $labPython -X utf8 -m lab9.evalset --v2
+& $labPython -X utf8 -m pytest -q -m student -o addopts= -k lab9
+```
+
+Để sinh lại toàn bộ bằng chứng M5–M7, chạy `& $labPython -X utf8 -m lab9.advanced_evidence` tại `src/`. Lệnh này sinh lại report bằng script; không sửa tay report. Các bước commit, PR và nộp LMS nằm trong `SUBMISSION.md` ở gốc repo.

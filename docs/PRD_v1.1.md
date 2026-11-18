@@ -63,7 +63,7 @@ Judge chỉ dùng cho tiêu chí đã qua calibration. Tone đạt κ=0.757, P=0
 
 ## 5. Cổng release
 
-Chạy từ `src/`: `python -m lab9.gate --pr reports/eval_<shape>.json --baseline reports/baseline_v1.json --spec config/metric_spec.yaml`. Trên máy Windows hiện tại, cách gọi Python môi trường riêng có trong `TIEN_DO_LAB.md`.
+Chạy từ `src/`: `python -m lab9.gate --pr reports/eval_<shape>.json --baseline reports/baseline_v1.json --spec config/metric_spec.yaml`. Cách gọi Python trên Windows có đường dẫn dài nằm trong [eval card](eval_card.md#chạy-trên-windows-có-đường-dẫn-dài).
 
 | Kiểm chứng local | Run ID | Kết quả |
 |---|---|---|
