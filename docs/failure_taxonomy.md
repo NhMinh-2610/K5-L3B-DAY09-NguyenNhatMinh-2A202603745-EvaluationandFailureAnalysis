@@ -68,7 +68,7 @@ Metric `reply_ledger_consistent` được thêm vào spec v1 với `blocking=tru
 
 `ProposalAmountCorrect` đọc riêng `result.proposal_amount` và nhãn `proposal_amount`. Metric `proposal_amount_correct` là chẩn đoán, `blocking=false`, `min=0.95`; không thay thế điều kiện chặn của các metric gốc. Spec hiện tại có `metric_spec_version=1.2`, eval set vẫn v1. Cả 7 metric gốc, ngưỡng, seeds và cấu hình bootstrap được giữ nguyên; chỉ thêm hai metric đã được bạn đồng ý.
 
-Report `reports/eval_m3_misreport.json`, run ID `E-m3_misreport-20261118-8b26`, chạy 14 item × 5 seed bằng công tắc misreport có sẵn: `pass_rate=1.0`, `refund_amount_correct=1.0` nhưng `reply_ledger_consistent=0.8571`. Như vậy metric mới phát hiện phần lời trả lời sai tiền mà bộ chấm Lab 8 bỏ qua. Report được sinh qua harness `lab9.eval`, không sửa tay.
+Report `reports/eval_m3_misreport.json`, run ID hiện tại `E-m3_misreport-20261118-13a7`, chạy 14 item × 5 seed bằng công tắc misreport có sẵn: `pass_rate=1.0`, `refund_amount_correct=1.0` nhưng `reply_ledger_consistent=0.8571`. Như vậy metric mới phát hiện phần lời trả lời sai tiền mà bộ chấm Lab 8 bỏ qua. Report được sinh qua harness `lab9.eval`, không sửa tay. Ở M4, report được chạy lại sau chuẩn hoá LF để cùng SHA với baseline; nội dung item/nhãn và các metric giữ nguyên so với lần M3 có hậu tố `8b26`.
 
 Phạm vi hiện tại là reply của lab, mỗi câu mô tả khoản hoàn hiện tại. Grader không diễn giải tiền viết bằng chữ hay lời nhắc nhiều khoản tiền trong các ngữ cảnh khác nhau. Trace gốc của swarm không có event reply; trường hợp không có khẳng định tiền trả True với reason nêu rõ không có số tiền để đối chiếu. Điều đó không chứng minh agent đã trả lời đầy đủ hay quyết định đúng; các grader kết quả và trace contract vẫn cần thiết.
 

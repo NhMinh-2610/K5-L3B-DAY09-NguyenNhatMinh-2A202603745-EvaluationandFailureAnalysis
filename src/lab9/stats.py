@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from math import isfinite
+from numbers import Integral
 
 POS = "FAIL"   # the judge's job is to FIND failures, so FAIL is the positive class
 
@@ -72,8 +73,32 @@ def paired_bootstrap(a: Sequence[float], b: Sequence[float], *, n_resamples: int
     """a[i], b[i] = per-item mean over seeds, SAME items, SAME order.
     Return (mean(a)-mean(b), lo, hi) with scipy.stats.bootstrap(paired=True, method="percentile",
     rng=numpy.random.default_rng(rng)). If a == b everywhere return (0.0, 0.0, 0.0)."""
-    # TODO M4
-    raise NotImplementedError
+    import numpy as np
+    from scipy.stats import bootstrap
+
+    pr = np.asarray(a, dtype=float)
+    baseline = np.asarray(b, dtype=float)
+    if pr.ndim != 1 or baseline.ndim != 1 or len(pr) != len(baseline) or len(pr) == 0:
+        raise ValueError("paired bootstrap requires non-empty 1D arrays of the same length")
+    if not np.isfinite(pr).all() or not np.isfinite(baseline).all():
+        raise ValueError("paired bootstrap requires finite values")
+    if isinstance(n_resamples, bool) or not isinstance(n_resamples, Integral) or n_resamples <= 0:
+        raise ValueError("n_resamples must be a positive integer")
+    if not isfinite(confidence) or not 0 < confidence < 1:
+        raise ValueError("confidence must be between 0 and 1")
+    if np.array_equal(pr, baseline):
+        return 0.0, 0.0, 0.0
+    if len(pr) < 2:
+        raise ValueError("a confidence interval requires at least two paired items")
+
+    def mean_difference(x, y, axis=-1):
+        return np.mean(x, axis=axis) - np.mean(y, axis=axis)
+
+    result = bootstrap((pr, baseline), mean_difference, paired=True,
+                       n_resamples=int(n_resamples), method="percentile",
+                       confidence_level=confidence, rng=np.random.default_rng(rng))
+    delta = float(np.mean(pr) - np.mean(baseline))
+    return delta, float(result.confidence_interval.low), float(result.confidence_interval.high)
 
 
 def pass_at_k(n: int, c: int, k: int) -> float:

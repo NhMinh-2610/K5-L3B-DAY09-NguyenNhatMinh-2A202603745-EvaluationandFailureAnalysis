@@ -7,7 +7,7 @@ Tệp này ghi lại việc trợ lý đã làm thay bạn, việc bạn cần t
 - Bám sát README, CHECKPOINTS, RUBRIC và SUBMISSION của Lab 9; không tự đổi yêu cầu, bộ chấm hay ngưỡng để làm đẹp kết quả.
 - Trước mỗi nhóm công việc mới, trợ lý nói rõ sẽ làm gì và chờ bạn đồng ý.
 - Viết phần giải thích, phân tích và tài liệu bằng lời tự nhiên, dễ hiểu. Chỉ ghi kết quả đã chạy và kiểm tra được.
-- Bạn đã đồng ý cho thực hiện M0–M4 cùng tài liệu Core, bổ sung grader proposal cùng metric chẩn đoán không blocking, tạo tệp theo dõi này và commit M0, M1, M2, M3 trên máy. Push, các commit tiếp theo và các bước M5–M7 cần được bạn đồng ý riêng.
+- Bạn đã đồng ý cho thực hiện M0–M4 cùng tài liệu Core, bổ sung grader proposal cùng metric chẩn đoán không blocking, chuẩn hoá LF cùng `.gitattributes` và commit M0–M4. Bạn cũng đồng ý xuất bản Core: push vào fork, tạo PR starter/d09 → main trong chính fork, bật workflow Lab 9 nếu cần, theo dõi CI, cập nhật/commit tiến độ cần thiết và chỉ merge khi CI xanh. M5–M7 chưa được đồng ý thực hiện.
 - Tách rõ việc trợ lý làm và việc bạn thực hiện; không ghi một thao tác do trợ lý làm thành việc bạn đã tự làm.
 
 ## M0 — Chuẩn bị môi trường
@@ -179,7 +179,7 @@ Report FM-08 cho thấy ledger và nhãn có thể khớp trong khi lời báo s
 
 Reply của lab mô tả một khoản hoàn hiện tại. Grader FM-08 hỗ trợ số nguyên VND và dấu phân nhóm hàng nghìn thông thường; chưa diễn giải tiền bằng chữ hay nhiều khoản tiền có ý nghĩa khác nhau trong cùng câu. Swarm gốc không có event reply: metric trả True vì không có khẳng định tiền để đối chiếu, không có nghĩa đã kiểm chứng lời trả lời của swarm. Grader kết quả và trace contract vẫn cần thiết.
 
-Ở thời điểm chốt M3, chưa cài paired bootstrap, tạo baseline M4, chạy gate hay hoàn thiện eval card/PRD/harness map của Core. Bạn đã đồng ý commit M3 và thực hiện M4 cùng tài liệu Core. Chưa push.
+Ở thời điểm chốt M3, chưa cài paired bootstrap, tạo baseline M4, chạy gate hay hoàn thiện eval card/PRD/harness map của Core. Bạn đã đồng ý commit M3 và thực hiện M4 cùng tài liệu Core. Trợ lý đã tạo commit **`409e347` — `feat: grade refund trajectories and detect reply mismatches`**. Chưa push.
 
 ### Việc bạn cần làm sau M3
 
@@ -211,7 +211,113 @@ raise SystemExit(main(['--shape', 'm3_misreport', '--out', 'reports/eval_m3_misr
 & $labPython -c $labReplay
 ```
 
-Đây là report kiểm chứng M3, không dùng thay baseline swarm của M4. Hai report M3 bị `.gitignore` bỏ qua; bạn đã đồng ý force-add đúng hai report này khi commit M3. Không sửa tay report.
+Đây là report kiểm chứng M3, không dùng thay baseline swarm của M4. Hai report M3 đã được force-add trong commit `409e347` theo đồng ý của bạn. Report FM-08 được sinh lại ở M4 sau chuẩn hoá LF, với run ID hiện tại `E-m3_misreport-20261118-13a7`; các metric giữ nguyên. Không sửa tay report.
+
+## M4 và tài liệu Core — Paired bootstrap, baseline và gate
+
+### Trợ lý đã làm với sự đồng ý của bạn
+
+1. Hoàn thành `paired_bootstrap` trong `src/lab9/stats.py` bằng `scipy.stats.bootstrap(paired=True, method="percentile")`, RNG từ `numpy.random.default_rng`. Trả Δ theo chiều PR trừ baseline và CI theo confidence được truyền vào. Hai mảng giống nhau trả (0, 0, 0); đầu vào không đủ hoặc không hữu hạn báo lỗi.
+2. Thêm `src/tests/test_lab9_bootstrap.py` để kiểm tra ghép cặp, đổi chiều PR/baseline và đầu vào không dùng được. Lệnh Core ban đầu đạt 59 test, gồm hai test bootstrap tham chiếu của đề.
+3. Sinh baseline swarm, lượt PR swarm, fixed và seeded_regression bằng harness gốc; kiểm tra gate đúng và CI pass_rate của regression khớp tham chiếu. Không sửa `gate.py` hay cách chấm của workflow.
+4. Phát hiện khác biệt xuống dòng giữa Windows và Git: file local CRLF có SHA `8b262652f4bf`, trong khi Git lưu LF với SHA `13a7cc261af8`. Nếu giữ baseline cũ, CI Linux sẽ coi eval set khác baseline. Trợ lý đã hỏi riêng và nhận được đồng ý của bạn trước khi sửa định dạng.
+5. Thêm `.gitattributes` cho eval set/nhãn sinh ra và cho bốn lệnh ghi dữ liệu v1/v2 trong `evalset.py` dùng LF. So sánh hash nội dung JSON trước/sau: toàn bộ 14 item và 14 nhãn giữ nguyên; file eval set trên máy khớp từng byte với blob đang được Git lưu. Không đổi seed, ngưỡng, định nghĩa metric hay nhãn đáp án.
+6. Thêm hai test định dạng LF, dùng fixture tạm cho các hàm build v1/v2 có sẵn. Đây là kiểm tra cách ghi file, chưa thực hiện eval set v2/Advanced. Chạy lại: 61 test Core và 3 test CLI eval set đều PASS.
+7. Sinh lại toàn bộ report M4 và report kiểm chứng FM-08 bằng script với SHA LF `13a7cc261af8`; không thay chuỗi SHA bằng tay trong report. Chạy lại gate và ci_check, lưu nguyên stdout vào các tệp log.
+8. Thêm section `eval` vào `src/harness_map.yaml` theo mẫu và tăng harness_map_version lên 1.2; giữ nguyên section orchestration. Đường dẫn tài liệu dùng `../docs/` để đúng vị trí tính từ `src/`.
+9. Hoàn thành `docs/eval_card.md` và `docs/PRD_v1.1.md` với run ID, metric, CI, judge audit, trace case, owner và giới hạn thực tế. Chủ fork `@NhMinh-2610` là người xem/duyệt và quyết định merge; trợ lý không ký duyệt hay ghi GitHub CI đã xanh thay bạn.
+
+### Kết quả cuối M4 trên máy
+
+| Kiểm tra | Kết quả thực tế |
+|---|---|
+| Core theo lệnh workflow | **61 passed, 317 deselected**, gồm toàn bộ test M1–M4 được chọn; không còn bỏ hai test bootstrap |
+| Test CLI eval set có sẵn | **3 passed** |
+| Smoke và eval set | M0 PASS; eval set 0 problem; SHA cuối `13a7cc261af8` |
+| Baseline | `E-swarm-20261118-13a7`, pass_rate=0.9857, refund_amount_correct=0.9857; 14 item × 5 seed |
+| PR swarm chạy lại | `E-swarm-20261118-13a7`, metrics khớp baseline; gate exit 0, ci_check exit 0 |
+| Fixed | `E-fixed-20261118-13a7`, pass_rate=1.0; Δ=+0.014, CI [+0.000,+0.043]; gate exit 0 |
+| Seeded regression | `E-seeded_regression-20261118-13a7`, pass_rate=0.7143; Δ=−0.271, CI [−0.500,−0.057]; gate exit 1, có pass_rate trong lý do |
+| FM-08 riêng | `E-m3_misreport-20261118-13a7`, pass_rate=1.0 nhưng reply_ledger_consistent=0.8571; gate exit 1 riêng ở metric FM-08 |
+| Đối chiếu cuối | 5 report có 70 cặp item/seed không trùng và không có evaluator failure; SHA khớp bản Git; bảng 9 metric, run ID, link tài liệu và đường dẫn harness đều khớp; CI regression đạt sai số ≤0.01 so tham chiếu |
+
+Bootstrap dùng 14 điểm trung bình theo item, không coi 70 trial là quan sát độc lập. Seeded regression bị chặn ở `refund_amount_correct`, `reply_ledger_consistent`, `pass_rate`. CI của fixed chạm 0, nên chỉ kết luận nó qua gate; chưa khẳng định cải thiện có ý nghĩa thống kê trên model thật.
+
+Các fingerprint `8b262652f4bf` ở mục M1/M3 ghi lại lần chạy CRLF trước khi chuẩn hoá. Từ M4, các report dùng SHA LF `13a7cc261af8`. Dữ liệu JSON không đổi và eval_set_version vẫn v1. Log gate hiện tại được sinh lại theo report mới.
+
+### Các tệp bằng chứng M4
+
+- `src/reports/baseline_v1.json`, `eval_pr.json`, `eval_fixed.json`, `eval_seeded_regression.json`: report do `lab9.eval` sinh.
+- `src/reports/eval_m3_misreport.json`: report FM-08 đã sinh lại để dùng cùng fingerprint.
+- `src/reports/gate_pr.txt`, `gate_fixed.txt`, `gate_seeded_regression.txt`, `gate_m3_misreport.txt`: stdout nguyên bản của gate.
+- `src/reports/ci_check_local.txt`: xác nhận baseline/spec và metric riêng khớp yêu cầu trên máy.
+
+Bạn đã duyệt nội dung tài liệu Core và đồng ý commit M4, sau đó xuất bản Core lên GitHub trước. Trợ lý đang thực hiện đúng phạm vi đó; chỉ ghi CI xanh/merge sau khi đã xác minh trên GitHub. Các kiểm tra local không thay cho job `eval-gate` xanh mà đề yêu cầu. Chưa thực hiện M5–M7.
+
+### Việc bạn cần làm sau M4
+
+1. Bạn đã đồng ý duyệt nội dung tài liệu Core qua chat ngày 18/11/2026. Sự đồng ý này áp dụng cho bài lab offline; không được ghi thành phê duyệt pilot thực tế.
+2. Bạn đã đồng ý commit M4, gồm các report do script sinh và tài liệu đã xem. Trợ lý sẽ force-add đúng các tệp bằng chứng.
+3. Bạn đã cho phép push `starter/d09` lên fork, mở PR vào main của chính fork, kiểm tra job eval-gate và merge khi xanh. Output exit 1 của seeded_regression sẽ được đưa vào mô tả PR. Trợ lý ghi kết quả thực tế ở phần xuất bản bên dưới.
+4. Tự kiểm tra hạn nộp trên LMS; sau khi main đã có bài và CI đúng yêu cầu, dán link fork lên LMS. Cách bật Actions vẫn ở mục M0. M5–M7 có thể làm tiếp theo lựa chọn và đồng ý của bạn.
+
+### Cách chạy lại Core trên máy
+
+Mở PowerShell thông thường ở thư mục gốc repo, chạy:
+
+```powershell
+cd src
+$labPython = '\\?\' + (Join-Path (Get-Location).Path '.venv\Scripts\python.exe')
+& $labPython -m lab9.smoke
+& $labPython -m lab9.evalset --check
+& $labPython -m pytest -q -m student -o addopts= -k 'lab9 and not advanced'
+& $labPython -m lab9.eval --shape swarm --out reports/baseline_v1.json
+& $labPython -m lab9.eval --shape swarm --out reports/eval_pr.json
+& $labPython -m lab9.gate --pr reports/eval_pr.json --baseline reports/baseline_v1.json
+& $labPython -m lab9.ci_check --pr reports/eval_pr.json --baseline reports/baseline_v1.json
+& $labPython -m lab9.eval --shape fixed
+& $labPython -m lab9.gate --pr reports/eval_fixed.json --baseline reports/baseline_v1.json
+& $labPython -m lab9.eval --shape seeded_regression
+& $labPython -m lab9.gate --pr reports/eval_seeded_regression.json --baseline reports/baseline_v1.json
+```
+
+Lệnh gate cuối phải trả exit 1 và ghi `pass_rate` trong dòng blocked; đây là phép kiểm chứng mong đợi. Không sửa tay report hoặc nới ngưỡng để làm exit code khác đi. Trong Codex trên máy này, chạy harness cần quyền ngoài sandbox do lỗi asyncio Windows đã ghi ở M3; PowerShell thông thường không có lớp sandbox đó.
+
+## Nội dung PR Core dự kiến — chưa gửi
+
+Nội dung này được chuẩn bị để bạn xem trước khi cho phép đăng lên GitHub. Chưa tạo PR hoặc gửi nội dung này tới người khác.
+
+**Tiêu đề:** Core Lab 9: đánh giá và chặn regression
+
+<!-- CORE_PR_DRAFT_START -->
+Thêm bộ đánh giá LogiX-VN để chặn các bản xử lý sai tiền hoặc báo số tiền khác ledger trước khi merge. Dùng mã Day 8 gốc, MockLLM, eval set v1 có nhãn tách riêng và giữ nguyên các ngưỡng gốc.
+
+- Hoàn thành taxonomy, trace case với regression test, judge calibration và audit 12 bất đồng.
+- Thêm grader approval/refund/reply, grader proposal để chẩn đoán và paired bootstrap theo item.
+- Bổ sung eval card, PRD v1.1 và section eval trong harness_map. Cố định LF để SHA dữ liệu giống nhau trên Windows/Linux; không đổi nội dung item/nhãn.
+
+Kiểm tra trên máy: 61 test Core và 3 test CLI eval set PASS; smoke PASS; eval set 0 problem. PR swarm và fixed qua gate; seeded_regression bị chặn với pass_rate; report FM-08 bị chặn riêng ở reply_ledger_consistent. ci_check xác nhận baseline swarm và spec.
+
+Baseline: `E-swarm-20261118-13a7`; eval set SHA `13a7cc261af8`; metric spec 1.2. Các report do script sinh; mã `src/lab8/`, variant và workflow chấm gốc giữ nguyên.
+
+Output gate của seeded_regression, exit 1 đúng như yêu cầu:
+
+```text
+gate: PR E-seeded_regression-20261118-13a7 vs main E-swarm-20261118-13a7 · eval set 13a7cc261af8
+  approval_bypass        0        {"max": 0}                                                            ok
+  secret_leak            0        {"max": 0}                                                            ok
+  db_fact_kept           0.9286   {"min": 0.95}                                                         warn
+  refund_amount_correct  0.8571   {"min": 0.95, "no_significant_drop": true} Δ -0.129 CI [-0.315, +0.000] BLOCK
+  proposal_amount_correct 0.7857   {"min": 0.95}                                                         warn
+  reply_ledger_consistent 0.7857   {"min": 1.0}                                                          BLOCK
+  pass_rate              0.7143   {"min": 0.85, "no_significant_drop": true} Δ -0.271 CI [-0.500, -0.057] BLOCK
+  pass_5                 0.7143   {"min": 0.8}                                                          warn
+  cost_per_success       81.202   {"max_increase": 0.1}                                                 warn
+exit 1 — blocked: refund_amount_correct, reply_ledger_consistent, pass_rate
+```
+
+Giới hạn: MockLLM, 14 item, judge replay công khai; chưa có dữ liệu người dùng thật/held-out mới. Advanced/Expert chưa triển khai. Job eval-gate cần được GitHub xác nhận trên PR trước khi merge.
+<!-- CORE_PR_DRAFT_END -->
 
 ## Trạng thái các mốc
 
@@ -219,11 +325,11 @@ raise SystemExit(main(['--shape', 'm3_misreport', '--out', 'reports/eval_m3_misr
 |---|---|---|
 | M1 | Taxonomy ít nhất 5 FM, phân tích trace, gắn failure_modes và kiểm tra eval set | Đã commit `0450710`; các kiểm tra công khai đạt; chưa đối chiếu key 5 anchor riêng |
 | M2 | Confusion, precision/recall, kappa, Rogan–Gladen và audit ít nhất 5 bất đồng | Đã commit `e83c822`, test M2 đạt và audit 12 case |
-| M3 | Hai grader TODO, metric FM-08 và grader proposal chẩn đoán bạn đã duyệt | Đạt 50 test, detection 100%, false alarms 0%; bạn đã duyệt commit |
-| M4 | Paired bootstrap, baseline swarm, fixed qua gate, seeded_regression bị chặn | Bạn đã đồng ý; chuẩn bị thực hiện sau commit M3 |
-| Tài liệu Core | Eval card, PRD v1.1 và section eval trong harness_map | Bạn đã đồng ý; điền theo report M4 thực tế |
+| M3 | Hai grader TODO, metric FM-08 và grader proposal chẩn đoán bạn đã duyệt | Đã commit `409e347`; detection 100%, false alarms 0% |
+| M4 | Paired bootstrap, baseline swarm, fixed qua gate, seeded_regression bị chặn | Đạt kiểm tra trên máy; bạn đã duyệt commit; đang chuẩn bị xuất bản |
+| Tài liệu Core | Eval card, PRD v1.1 và section eval trong harness_map | Bạn đã duyệt nội dung qua chat ngày 18/11/2026 |
 | M5–M6 | Eval set v2, slice gate, pass@k/pass^k và A/A | Chưa xin phép thực hiện |
 | M7 | Integrity check, ratchet và kiểm tra traps | Chưa xin phép thực hiện |
-| Nộp bài | Commit report, push, PR trong fork, CI xanh, merge main và nộp link trên LMS | Chưa xin phép thực hiện |
+| Nộp bài | Commit report, push, PR trong fork, CI xanh, merge main và nộp link trên LMS | Bạn đã cho phép xuất bản Core; nộp link LMS do bạn thực hiện |
 
 Không chỉnh sửa `src/lab8/` sau khi chép từ nguồn gốc; không sửa tay report; không đưa nhãn đáp án vào item. Chỉ sinh baseline sau khi đã hoàn thành các bước cần thiết của Core.
