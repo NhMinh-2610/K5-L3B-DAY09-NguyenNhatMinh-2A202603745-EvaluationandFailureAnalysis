@@ -362,7 +362,7 @@ Trợ lý thực hiện: commit phần còn lại trên starter/d09, push lên o
 
 Đã commit/push toàn bộ phần M5–M7 cùng report/tài liệu ở `a10ed2b8dc04c74f5ff9a21e0b06bceb1f8371a0`. Đã tạo [PR #1](https://github.com/NhMinh-2610/K5-L3B-DAY09-NguyenNhatMinh-2A202603745-EvaluationandFailureAnalysis/pull/1), base là main trong chính fork, kèm đủ bằng chứng theo SUBMISSION. Workflow eval-gate.yml đang active.
 
-Trợ lý dùng Git/API với xác thực Git sẵn có vì plugin đăng xuất và Chrome chưa được cấp quyền. Token không được ghi ra log. Tại thời điểm cập nhật này CI đang được theo dõi; chỉ merge khi hai job eval-gate và eval-gate-v2 của đúng revision đều success. Trạng thái CI/merge trực tiếp nằm ở PR #1, kết quả cuối được báo trong chat. Không ghi CI xanh hoặc merge trước khi có kết quả.
+Trợ lý dùng Git/API với xác thực Git sẵn có vì plugin đăng xuất và Chrome chưa được cấp quyền. Token không được ghi ra log. Hai job eval-gate và eval-gate-v2 đã success trên revision `f25c99151fef9ab33947b4ed7c0a2e22ca567658`, workflow run `44275184381`. Trợ lý đã merge PR #1; merge commit trên main là `d19bd2f3ca4ef5b851d2603677035dee21de3051`. Kết quả đã được API GitHub xác nhận, không phải suy từ kiểm tra local.
 
 ### Việc bạn còn cần làm khi main đã sẵn sàng
 
@@ -370,3 +370,12 @@ Trợ lý dùng Git/API với xác thực Git sẵn có vì plugin đăng xuất
 2. Mở link PR/Actions được ghi ở phần kết quả bên dưới để xem CI và merge.
 3. Vào LMS đúng ca, mở bài nộp Lab 9, dán link repo fork và lưu/nộp trước hạn: https://github.com/NhMinh-2610/K5-L3B-DAY09-NguyenNhatMinh-2A202603745-EvaluationandFailureAnalysis.
 4. Nếu LMS yêu cầu xác nhận/chấm riêng hoặc giảng viên cấp key anchor/test ẩn, làm theo yêu cầu đó; không tự ghi đã đạt khi chưa có kết quả.
+
+
+## Kết quả xuất bản đã xác minh
+
+- Trợ lý đã commit/push bài, khôi phục tiến độ theo yêu cầu bạn, tạo PR #1 trong fork, theo dõi CI và merge sau khi hai job đều success. Bài M0–M7, dữ liệu, report, AGENTS và tài liệu Word đều đã có trên main ở merge commit `d19bd2f`.
+- PR: https://github.com/NhMinh-2610/K5-L3B-DAY09-NguyenNhatMinh-2A202603745-EvaluationandFailureAnalysis/pull/1
+- CI success: https://github.com/NhMinh-2610/K5-L3B-DAY09-NguyenNhatMinh-2A202603745-EvaluationandFailureAnalysis/actions/runs/44275184381
+- Bản cập nhật trạng thái này chỉ sửa tài liệu để ghi kết quả thật, không đổi code, seed, ngưỡng hay report.
+- **Bạn còn cần nộp LMS:** mở bài Lab 9 đúng ca, dán link repo fork ở trên và bấm lưu/nộp trước hạn. Trợ lý chưa thao tác LMS hoặc xác nhận đã nộp thay bạn.
