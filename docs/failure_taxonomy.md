@@ -56,7 +56,7 @@ Các số event chỉ mô tả dấu sai đầu tiên có trong trace; không kh
 
 Nhãn giữ nguyên từ ma trận gốc và nằm trong `labels_v1.json`. `checked_by` ghi rõ việc replay do trợ lý thực hiện. `from_trace` và `generator` để `null` vì các item lấy từ ma trận công khai, không phải item mới sinh từ trace. Report lưu 15 đối chứng `fixed`: toàn bộ 14 claim ở seed 11 và C-002 ở seed 55.
 
-Để tái hiện: chạy `python -m lab9.m1_evidence`, sau đó `python -m lab9.evalset --build --check` trong `src/`. Cách gọi Python trên máy Windows có đường dẫn dài được ghi trong `TIEN_DO_LAB.md`.
+Để tái hiện: chạy `python -m lab9.m1_evidence`, sau đó `python -m lab9.evalset --build --check` trong `src/`. Cách gọi Python trên Windows có đường dẫn dài nằm trong [hướng dẫn chạy](eval_card.md#chạy-trên-windows-có-đường-dẫn-dài).
 
 ## M3 — Các assertion đã triển khai và phạm vi kiểm tra
 
