@@ -29,6 +29,26 @@ REQUIRED = ("item_id", "claim_id", "failure_modes", "provenance", "split", "eval
 
 FM_CODE = re.compile(r"FM-\d{2}")
 
+# M1 annotations for the public matrix. Tags describe the risks a case exercises;
+# they do not say that the fixed agent failed. Evidence and control runs are in
+# docs/failure_taxonomy.md and the output of python -m lab9.m1_evidence.
+FAILURE_MODES_BY_MATRIX: dict[str, tuple[str, ...]] = {
+    "T01": ("FM-01", "FM-04", "FM-07"),
+    "T02": ("FM-01", "FM-03"),
+    "T03": ("FM-01",),
+    "T04": ("FM-01",),
+    "T05": ("FM-01", "FM-09"),
+    "T06": ("FM-01", "FM-06"),
+    "T07": ("FM-01", "FM-02", "FM-08"),
+    "T08": ("FM-01", "FM-08"),
+    "T09": ("FM-01",),
+    "T10": ("FM-01", "FM-07"),
+    "T11": ("FM-01", "FM-07"),
+    "T12": ("FM-01", "FM-07"),
+    "T13": ("FM-01", "FM-02", "FM-05", "FM-08"),
+    "T14": ("FM-01", "FM-04", "FM-05", "FM-08"),
+}
+
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
@@ -40,24 +60,35 @@ def sha12(path: Path) -> str:
 
 def build(source: Path = SOURCE) -> tuple[int, int]:
     claims = load_jsonl(source)
+    reviewed: dict[str, str] = {}
+    evidence_path = Path("reports/m1_trace_evidence.json")
+    if evidence_path.is_file():
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        if evidence.get("source", {}).get("claims_sha") == sha12(source):
+            for control in evidence.get("controls", []):
+                trial = control["trial"]
+                result = trial["result"]
+                if trial["lab8_pass"] and result["seed"] == 11:
+                    reviewed[result["claim_id"]] = result["run_id"]
     items, labels = [], {}
     for n, claim in enumerate(claims, start=1):
         item_id = f"E-{n:03d}"
         items.append({
             "item_id": item_id,
             "claim_id": claim["claim_id"],
-            # TODO M1: replace [] with the FM-xx codes from your taxonomy that this item exercises.
-            "failure_modes": [],
+            "failure_modes": list(FAILURE_MODES_BY_MATRIX.get(claim.get("matrix_id"), ())),
             "provenance": {"source": "lab8_public", "matrix_id": claim.get("matrix_id"),
                            "from_trace": None, "generator": None,
-                           "label_by": "lab8_matrix", "checked_by": None},
+                           "label_by": "lab8_matrix",
+                           "checked_by": (f"assistant:lab9.m1_evidence:{reviewed[claim['claim_id']]}"
+                                          if claim["claim_id"] in reviewed else None)},
             "split": "regression",
             "eval_set_version": VERSION,
         })
         labels[claim["claim_id"]] = claim["expected"]
     ITEMS.parent.mkdir(parents=True, exist_ok=True)
-    ITEMS.write_text("".join(json.dumps(i, ensure_ascii=False) + "\n" for i in items), encoding="utf-8")
-    LABELS.write_text(json.dumps(labels, ensure_ascii=False, indent=2), encoding="utf-8")
+    ITEMS.write_text("".join(json.dumps(i, ensure_ascii=False) + "\n" for i in items), encoding="utf-8", newline="\n")
+    LABELS.write_text(json.dumps(labels, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
     return len(items), len(labels)
 
 
@@ -98,8 +129,8 @@ def build_v2(items_v1: Path = ITEMS, labels_v1: Path = LABELS, pack: Path = PACK
             "slices": slices_for(claim["expected"], True),
         })
         labels[claim["claim_id"]] = claim["expected"]
-    ITEMS_V2.write_text("".join(json.dumps(i, ensure_ascii=False) + "\n" for i in items), encoding="utf-8")
-    LABELS_V2.write_text(json.dumps(labels, ensure_ascii=False, indent=2), encoding="utf-8")
+    ITEMS_V2.write_text("".join(json.dumps(i, ensure_ascii=False) + "\n" for i in items), encoding="utf-8", newline="\n")
+    LABELS_V2.write_text(json.dumps(labels, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
     return len(items), len(labels)
 
 

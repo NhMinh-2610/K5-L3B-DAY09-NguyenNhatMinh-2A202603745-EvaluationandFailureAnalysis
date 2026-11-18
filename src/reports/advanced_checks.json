@@ -1,0 +1,440 @@
+{
+  "run_id": "M5-M7-356024eacef2",
+  "note": "Local evidence only; no GitHub CI or instructor hidden tests were run.",
+  "checks": [
+    {
+      "module": "lab9.eval",
+      "args": [
+        "--shape",
+        "swarm",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--out",
+        "reports/baseline_v2.json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/baseline_v2.txt"
+    },
+    {
+      "module": "lab9.eval",
+      "args": [
+        "--shape",
+        "fixed",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--out",
+        "reports/eval_fixed_v2.json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/eval_fixed_v2.txt"
+    },
+    {
+      "module": "lab9.eval",
+      "args": [
+        "--shape",
+        "honest_refactor",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--out",
+        "reports/eval_honest_refactor_v2.json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/eval_honest_refactor_v2.txt"
+    },
+    {
+      "module": "lab9.eval",
+      "args": [
+        "--shape",
+        "seeded_regression",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--out",
+        "reports/eval_seeded_regression_v2.json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/eval_seeded_regression_v2.txt"
+    },
+    {
+      "module": "lab9.eval",
+      "args": [
+        "--shape",
+        "slice_regression",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--out",
+        "reports/eval_slice_regression.json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/eval_slice_regression.txt"
+    },
+    {
+      "module": "lab9.eval",
+      "args": [
+        "--shape",
+        "flaky_regression",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--out",
+        "reports/eval_flaky_regression.json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/eval_flaky_regression.txt"
+    },
+    {
+      "module": "lab9.mutation",
+      "args": [
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--aa",
+        "66,77,88,99,110"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/aa_v2.txt"
+    },
+    {
+      "module": "lab9.mutation",
+      "args": [
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--baseline",
+        "reports/baseline_v2.json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/mutation_v2.txt"
+    },
+    {
+      "module": "lab9.eval",
+      "args": [
+        "--shape",
+        "v2_misreport",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--out",
+        "reports/eval_v2_misreport.json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/eval_v2_misreport.txt"
+    },
+    {
+      "module": "lab9.eval",
+      "args": [
+        "--shape",
+        "v2_quiet_override",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--out",
+        "reports/eval_v2_quiet_override.json"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/eval_v2_quiet_override.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/baseline_v2.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--base-spec",
+        "reports/metric_spec_v2.baseline.yaml"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/gate_swarm_v2.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/eval_fixed_v2.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--base-spec",
+        "reports/metric_spec_v2.baseline.yaml"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/gate_fixed_v2.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/eval_honest_refactor_v2.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--base-spec",
+        "reports/metric_spec_v2.baseline.yaml"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/gate_honest_refactor_v2.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/eval_seeded_regression_v2.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--base-spec",
+        "reports/metric_spec_v2.baseline.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/gate_seeded_regression_v2.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/eval_slice_regression.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--base-spec",
+        "reports/metric_spec_v2.baseline.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/gate_slice_regression_v2.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/eval_flaky_regression.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--base-spec",
+        "reports/metric_spec_v2.baseline.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/gate_flaky_regression_v2.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/eval_v2_misreport.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--base-spec",
+        "reports/metric_spec_v2.baseline.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/gate_v2_misreport_v2.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/eval_v2_quiet_override.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml",
+        "--base-spec",
+        "reports/metric_spec_v2.baseline.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/gate_v2_quiet_override_v2.txt"
+    },
+    {
+      "module": "lab9.traps",
+      "args": [
+        "--pr",
+        "reports/eval_slice_regression.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/traps_v2.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/traps/evaluator_errors_as_nan.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/traps/evaluator_errors_as_nan.gate.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/traps/dropped_failing_rows.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/traps/dropped_failing_rows.gate.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/traps/cherry_picked_seeds.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/traps/cherry_picked_seeds.gate.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/traps/loosened_spec.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "reports/traps/loosened_spec.spec.yaml",
+        "--base-spec",
+        "config/metric_spec_v2.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/traps/loosened_spec.gate.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/extra_traps/duplicate_row.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/extra_traps/duplicate_row.gate.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/extra_traps/evaluator_failure_green.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/extra_traps/evaluator_failure_green.gate.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/extra_traps/relabel_slice.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/extra_traps/relabel_slice.gate.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/extra_traps/forged_summary.json",
+        "--baseline",
+        "reports/baseline_v2.json",
+        "--spec",
+        "config/metric_spec_v2.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/extra_traps/forged_summary.gate.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/eval_pr.json",
+        "--baseline",
+        "reports/baseline_v1.json",
+        "--spec",
+        "config/metric_spec.yaml"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/gate_pr_after_m7.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/eval_fixed.json",
+        "--baseline",
+        "reports/baseline_v1.json",
+        "--spec",
+        "config/metric_spec.yaml"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "reports/gate_fixed_after_m7.txt"
+    },
+    {
+      "module": "lab9.gate",
+      "args": [
+        "--pr",
+        "reports/eval_seeded_regression.json",
+        "--baseline",
+        "reports/baseline_v1.json",
+        "--spec",
+        "config/metric_spec.yaml"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "log": "reports/gate_seeded_regression_after_m7.txt"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+gate: PR E-swarm-20261118-3560 vs main E-swarm-20261118-3560 · eval set 356024eacef2
+  INTEGRITY PR: summary pass_rate disagrees with rows
+exit 1 — blocked: integrity
