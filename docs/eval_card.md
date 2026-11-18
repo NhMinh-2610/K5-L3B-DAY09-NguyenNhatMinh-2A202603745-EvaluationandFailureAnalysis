@@ -1,6 +1,6 @@
 # Eval card — LogiX-VN refund agent
 
-Ngày chạy: **18/11/2026**. Card này ghi kết quả Core và phần M5–M7 bổ sung bên dưới, chạy trên máy bằng MockLLM. GitHub Actions chưa được chạy qua PR; chủ fork tự thực hiện phần Git và nộp bài.
+Ngày chạy: **18/11/2026**. Card này ghi kết quả Core và phần M5–M7 bổ sung bên dưới, chạy trên máy bằng MockLLM. GitHub Actions đã success ở cả eval-gate và eval-gate-v2; PR #1 đã merge vào main ngày 18/11/2026 theo yêu cầu chủ fork. Chủ fork còn nộp link trên LMS.
 
 ## Phiên bản và nguồn dữ liệu
 
@@ -80,7 +80,7 @@ Phạm vi hiện tại là pilot offline của bài lab: claim hoàn tiền tron
 - Grader FM-08 hỗ trợ số nguyên VND có đơn vị và cách phân nhóm hàng nghìn thông thường trong reply của lab. Chưa diễn giải tiền bằng chữ hoặc nhiều khoản tiền có vai trò khác nhau.
 - Swarm gốc không có event reply; giá trị 1.0 của reply_ledger_consistent ở baseline nghĩa là không thấy khẳng định tiền để đối chiếu, không phải đã kiểm chứng lời văn đầy đủ.
 - Những kết quả v1 phía trên là mốc Core; bằng chứng slice, độ ổn định và chống sửa report nằm trong phần M5–M7 bên dưới.
-- Chủ fork tự commit/push phần M5–M7, mở PR, chạy GitHub Actions, merge vào main và nộp LMS. Core đã được push ở `f879cda` theo đồng ý trước đó; chưa có PR/merge. Kiểm tra local không được ghi thành CI GitHub đã xanh.
+- Theo yêu cầu mới, trợ lý đã commit/push M5–M7, mở PR #1 và merge sau khi hai job GitHub Actions xanh. Chủ fork còn nộp LMS. CI và kết quả local được ghi riêng trong mục xuất bản bên dưới.
 
 Đổi nội dung/tập item hoặc nhãn phải tăng eval_set_version và tạo baseline tương ứng. Đổi metric/ngưỡng phải tăng metric_spec_version; cùng một eval-set version chỉ giữ nguyên hoặc siết các ngưỡng đã có. Chuẩn hoá LF lần này giữ nguyên dữ liệu JSON, chỉ cố định fingerprint giữa các hệ điều hành.
 
@@ -138,4 +138,9 @@ Baseline và base-spec phải lấy từ nguồn main đáng tin khi áp dụng 
 
 Chạy từ `src/`: `python -m lab9.advanced_evidence` sinh toàn bộ report/log và [bằng chứng PR](PR_LAB9.md). [advanced_checks.json](../src/reports/advanced_checks.json) ghi đủ **30 lệnh kiểm chứng với exit code mong đợi**. Bộ test đạt **104 test Lab 9** (61 Core + 43 Advanced), cùng **3 test CLI eval set**. Gate v1 chạy lại sau M7 vẫn cho qua swarm/fixed và chặn seeded_regression đúng pass_rate.
 
-V2 vẫn chỉ có 28 item và năm seed cố định. Bug chỉ xuất hiện ở 1/3 seed không được phát hiện ổn định với năm seed; không hạ ngưỡng để buộc bắt nó. A/A=0 của MockLLM không chứng minh model thật không có nhiễu. Chưa chạy key anchor hoặc biến thể/trap ẩn; chưa có GitHub CI, PR, merge hay dữ liệu production. Chủ fork tự làm bước Git/nộp bài theo [tiến độ và hướng dẫn](../TIEN_DO_LAB.md).
+V2 vẫn chỉ có 28 item và năm seed cố định. Bug chỉ xuất hiện ở 1/3 seed không được phát hiện ổn định với năm seed; không hạ ngưỡng để buộc bắt nó. A/A=0 của MockLLM không chứng minh model thật không có nhiễu. Chưa chạy key anchor hoặc biến thể/trap ẩn; chưa có dữ liệu production. Phần xuất bản đã được xác minh bên dưới; chủ fork còn nộp LMS theo [tiến độ và hướng dẫn](../TIEN_DO_LAB.md).
+
+
+## Kết quả GitHub đã xác minh
+
+[PR #1](https://github.com/NhMinh-2610/K5-L3B-DAY09-NguyenNhatMinh-2A202603745-EvaluationandFailureAnalysis/pull/1) đã merge vào main, commit `d19bd2f3ca4ef5b851d2603677035dee21de3051`. [Workflow run 44275184381](https://github.com/NhMinh-2610/K5-L3B-DAY09-NguyenNhatMinh-2A202603745-EvaluationandFailureAnalysis/actions/runs/44275184381) success trên head `f25c99151fef9ab33947b4ed7c0a2e22ca567658`; detect, eval-gate và eval-gate-v2 đều completed/success. Đây là kết quả GitHub thực tế, bổ sung cho số liệu local. Trợ lý thực hiện xuất bản theo yêu cầu mới; chủ fork vẫn cần nộp LMS.

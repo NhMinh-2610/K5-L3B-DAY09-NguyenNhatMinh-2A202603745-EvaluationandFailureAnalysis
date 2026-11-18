@@ -115,3 +115,8 @@ Trước khi chấm chất lượng, gate từ chối report có evaluator failu
 Bằng chứng local: scorecard 3/3 lỗi bị chặn, 0 báo nhầm; fixed và honest_refactor qua gate. Slice_regression chỉ bị money_movement chặn; flaky có pass^5=0.5714 dưới sàn. Bốn trap công khai và bốn vector bổ sung đều bị chặn. A/A hai bộ seed có Δ=0 ở mọi metric số. Chi tiết, report/run ID và CI nằm trong [eval card](eval_card.md); output để dán vào PR nằm trong [PR_LAB9.md](PR_LAB9.md).
 
 Chưa chạy model thật, bộ chấm ẩn hay GitHub CI. Năm seed không đủ chứng minh bắt ổn định bug chỉ xảy ra ở 1/3 seed. Integrity không thay thế việc bảo vệ baseline/mã chấm. Các kết quả này bổ sung bằng chứng cho bài lab offline; chưa phải phê duyệt release sản phẩm thật.
+
+
+## Cập nhật xuất bản ngày 18 tháng 11 năm 2026
+
+Các câu về chưa có PR/CI ở các mốc phía trên ghi trạng thái trước xuất bản. Theo yêu cầu mới của chủ fork, trợ lý đã đưa bài lên main qua [PR #1](https://github.com/NhMinh-2610/K5-L3B-DAY09-NguyenNhatMinh-2A202603745-EvaluationandFailureAnalysis/pull/1), merge commit `d19bd2f`. Hai job eval-gate và eval-gate-v2 đã success trong [run 44275184381](https://github.com/NhMinh-2610/K5-L3B-DAY09-NguyenNhatMinh-2A202603745-EvaluationandFailureAnalysis/actions/runs/44275184381) trên revision `f25c991`. Chủ fork còn nộp link lên LMS. Việc merge bài lab không phải phê duyệt pilot thật hoặc ký duyệt kết quả v2 thay chủ fork.
