@@ -7,7 +7,7 @@ Tệp này ghi lại việc trợ lý đã làm thay bạn, việc bạn cần t
 - Bám sát README, CHECKPOINTS, RUBRIC và SUBMISSION của Lab 9; không tự đổi yêu cầu, bộ chấm hay ngưỡng để làm đẹp kết quả.
 - Trước mỗi nhóm công việc mới, trợ lý nói rõ sẽ làm gì và chờ bạn đồng ý.
 - Viết phần giải thích, phân tích và tài liệu bằng lời tự nhiên, dễ hiểu. Chỉ ghi kết quả đã chạy và kiểm tra được.
-- Bạn đã đồng ý cho thực hiện M0–M2, tạo tệp theo dõi này và commit M0, M1 trên máy. Push, các commit tiếp theo và các bước M3–M7 cần được bạn đồng ý riêng.
+- Bạn đã đồng ý cho thực hiện M0–M3, tạo tệp theo dõi này và commit M0, M1, M2 trên máy. Push, các commit tiếp theo và các bước M4–M7 cần được bạn đồng ý riêng.
 - Tách rõ việc trợ lý làm và việc bạn thực hiện; không ghi một thao tác do trợ lý làm thành việc bạn đã tự làm.
 
 ## M0 — Chuẩn bị môi trường
@@ -87,7 +87,7 @@ Tiền tố đường dẫn mở rộng giúp chạy môi trường trong thư m
 - Đọc bảng trong `docs/trace_case.md` để hiểu vì sao event 3 là bước sai đầu tiên, còn việc ghi tiền là hậu quả. Có thể tự chạy lại hai lệnh trace trong tài liệu để kiểm tra.
 - Nếu lớp có phát phiếu hoặc danh sách 5 anchor riêng, đối chiếu các claim/seed trong phiếu với bảng taxonomy. Không tự đánh dấu đã khớp key khi chưa có thông tin đó.
 - Xác nhận đã bật GitHub Actions và kiểm tra hạn nộp trên LMS như hướng dẫn M0.
-- Bạn đã xem kết quả và đồng ý cho commit M1, thực hiện M2. Trợ lý sẽ lưu M1 trên máy trước khi sửa phần M2; chưa push.
+- Bạn đã xem kết quả và đồng ý cho commit M1, thực hiện M2. Trợ lý đã lưu M1 trong commit **`0450710` — `feat: document failure modes and verify public trace cases`**, gồm cả report bằng chứng. Chưa push.
 
 ### Cách tái hiện M1 trên máy
 
@@ -101,15 +101,59 @@ $labPython = '\\?\' + (Join-Path (Get-Location).Path '.venv\Scripts\python.exe')
 & $labPython -m pytest -q -o addopts= tests/test_lab9_evalset.py tests/test_lab9_trace_case.py
 ```
 
-Chạy script evidence trước khi build để `checked_by` có thể dẫn đúng các đối chứng vừa kiểm tra. Report do script sinh bị `.gitignore` bỏ qua; bạn đã đồng ý force-add đúng report này khi commit M1. Không sửa tay report.
+Chạy script evidence trước khi build để `checked_by` có thể dẫn đúng các đối chứng vừa kiểm tra. Report do script sinh bị `.gitignore` bỏ qua; trợ lý đã force-add đúng report này trong commit M1 với sự đồng ý của bạn. Không sửa tay report.
+
+## M2 — Kiểm định judge và phân tích bất đồng
+
+### Trợ lý đã làm với sự đồng ý của bạn
+
+1. Hoàn thành bốn hàm `confusion`, `precision_recall`, `cohen_kappa` và `rogan_gladen` trong `src/lab9/stats.py`. Giữ FAIL là lớp positive, trả 0.0 khi mẫu số precision/recall bằng 0 và báo ValueError khi kappa không xác định. Rogan–Gladen dùng đúng công thức trong đề, giới hạn kết quả trong [0, 1] và kiểm tra đầu vào hợp lệ.
+2. Thêm `src/tests/test_lab9_judge_calibration.py` với các trường hợp biên và kiểm tra quyết định trên hai CSV. Không sửa test công khai, `judge.py`, ngưỡng calibration hay dữ liệu replay.
+3. Chạy `lab9.judge --audit 5` trên cả hai CSV và ghi lại số liệu thật. Judge tone đạt; judge helpful không đạt như yêu cầu của bài.
+4. Hoàn thành `docs/judge_audit.md`, gồm ma trận nhầm lẫn, precision/recall/kappa, hiệu chỉnh Rogan–Gladen và phân tích 12 case bất đồng. Phần nhận xét do trợ lý thực hiện theo reply, nhãn và note có sẵn; không ghi là bạn đã tự gán nhãn lại.
+5. Ghi rõ H-081 có note cho biết nhãn người sai, nhưng thiếu ticket để kiểm chứng độc lập. Chỉ đề xuất rà soát trong lần kiểm định sau; không đổi nhãn công khai để tăng điểm calibration.
+
+### Kết quả kiểm tra M2
+
+| Kiểm tra | Kết quả thực tế |
+|---|---|
+| Test M2 | **18 passed, 2 deselected**; 4 test M2 có sẵn và 14 trường hợp bổ sung đều đạt; hai test bootstrap thuộc M4 chưa chạy |
+| Judge tone | TP=24, FP=4, FN=6, TN=66; precision=0.857, recall=0.800, kappa=0.757; PASS floors, exit 0 |
+| Judge helpful | TP=9, FP=0, FN=21, TN=70; precision=1.000, recall=0.300, kappa=0.375; FAIL floors, exit 1 |
+| Rogan–Gladen | Tone: tỉ lệ lỗi quan sát 0.280 thành 0.300; helpful: 0.090 thành 0.300 |
+| Audit | 12 case có nhận xét ai đúng, căn cứ và đề xuất làm rõ rubric; SHA hai CSV được ghi trong tài liệu |
+| Kiểm tra cuối M2 | 12 case đều có ID hợp lệ; SHA CSV khớp tài liệu; `git diff --check` sạch; mã Lab 8, đề bài, CSV, ngưỡng và test công khai giữ nguyên |
+
+Judge helpful bỏ sót 21/30 lỗi trong nhãn người: 18 lỗi sai tiền và 3 lỗi xưng hô. Precision 1.0 không bù được recall 0.3 và kappa 0.375, nên không dùng judge này làm gate. Tone chỉ được kết luận đạt cho tiêu chí tone trên dữ liệu replay đã kiểm. Các phép tính hiệu chỉnh dùng lại dữ liệu calibration, không phải bằng chứng độc lập trên dữ liệu mới.
+
+Ở thời điểm chốt M2, chưa cài paired bootstrap, pass@k/pass^k, hai grader M3 hay metric FM-08. Bạn đã đồng ý commit M2 và thực hiện M3. Chưa tạo baseline và chưa push.
+
+### Việc bạn cần làm sau M2
+
+- Đọc bảng kết quả và phần phân tích trong `docs/judge_audit.md`. Bạn cần hiểu FAIL là lớp positive và vì sao helpful có precision 1.0 vẫn bị loại: nó chỉ bắt được 9/30 lỗi.
+- Với H-081, nếu lớp có cung cấp ticket/ngữ cảnh đầy đủ, kiểm tra lại note trước khi kết luận nhãn nào đúng. Không tự sửa CSV công khai để làm bài đạt ngưỡng.
+- Có thể chạy lại các lệnh dưới đây để xem kết quả. Lệnh helpful trả exit 1 là kết quả đúng theo đề.
+- Bạn đã đồng ý cho commit M2 và thực hiện M3. Việc bật Actions và xác nhận hạn nộp trên LMS vẫn cần bạn kiểm tra theo hướng dẫn M0.
+
+### Cách tái hiện M2 trên máy
+
+Từ thư mục gốc repo, mở PowerShell và chạy:
+
+```powershell
+cd src
+$labPython = '\\?\' + (Join-Path (Get-Location).Path '.venv\Scripts\python.exe')
+& $labPython -m lab9.judge --csv data/eval/judge_tone_public.csv --audit 5
+& $labPython -m lab9.judge --csv data/eval/judge_helpful_public.csv --audit 5
+& $labPython -m pytest -q -m student -o addopts= tests/test_lab9_stats.py tests/test_lab9_judge_calibration.py -k 'not bootstrap'
+```
 
 ## Trạng thái các mốc
 
 | Bước | Việc cần làm theo đề | Trạng thái |
 |---|---|---|
-| M1 | Taxonomy ít nhất 5 FM, phân tích trace, gắn failure_modes và kiểm tra eval set | Các kiểm tra công khai đã đạt; chưa đối chiếu key 5 anchor riêng; bạn đã duyệt commit |
-| M2 | Confusion, precision/recall, kappa, Rogan–Gladen và audit ít nhất 5 bất đồng | Bạn đã đồng ý; chuẩn bị thực hiện sau commit M1 |
-| M3 | Hai grader TODO và metric FM-08; regression test FM-03 đã có ở M1 | Chưa xin phép thực hiện grader/metric |
+| M1 | Taxonomy ít nhất 5 FM, phân tích trace, gắn failure_modes và kiểm tra eval set | Đã commit `0450710`; các kiểm tra công khai đạt; chưa đối chiếu key 5 anchor riêng |
+| M2 | Confusion, precision/recall, kappa, Rogan–Gladen và audit ít nhất 5 bất đồng | Đã đạt kiểm tra M2, audit 12 case; bạn đã duyệt commit |
+| M3 | Hai grader TODO và metric FM-08; regression test FM-03 đã có ở M1 | Bạn đã đồng ý; chuẩn bị thực hiện sau commit M2 |
 | M4 | Paired bootstrap, baseline swarm, fixed qua gate, seeded_regression bị chặn | Chưa xin phép thực hiện |
 | Tài liệu Core | Eval card, PRD v1.1 và section eval trong harness_map | Chưa xin phép thực hiện |
 | M5–M6 | Eval set v2, slice gate, pass@k/pass^k và A/A | Chưa xin phép thực hiện |
