@@ -7,7 +7,7 @@ Tệp này ghi lại việc trợ lý đã làm thay bạn, việc bạn cần t
 - Bám sát README, CHECKPOINTS, RUBRIC và SUBMISSION của Lab 9; không tự đổi yêu cầu, bộ chấm hay ngưỡng để làm đẹp kết quả.
 - Trước mỗi nhóm công việc mới, trợ lý nói rõ sẽ làm gì và chờ bạn đồng ý.
 - Viết phần giải thích, phân tích và tài liệu bằng lời tự nhiên, dễ hiểu. Chỉ ghi kết quả đã chạy và kiểm tra được.
-- Bạn đã đồng ý cho thực hiện M0–M3, tạo tệp theo dõi này và commit M0, M1, M2 trên máy. Push, các commit tiếp theo và các bước M4–M7 cần được bạn đồng ý riêng.
+- Bạn đã đồng ý cho thực hiện M0–M4 cùng tài liệu Core, bổ sung grader proposal cùng metric chẩn đoán không blocking, tạo tệp theo dõi này và commit M0, M1, M2, M3 trên máy. Push, các commit tiếp theo và các bước M5–M7 cần được bạn đồng ý riêng.
 - Tách rõ việc trợ lý làm và việc bạn thực hiện; không ghi một thao tác do trợ lý làm thành việc bạn đã tự làm.
 
 ## M0 — Chuẩn bị môi trường
@@ -126,7 +126,7 @@ Chạy script evidence trước khi build để `checked_by` có thể dẫn đ�
 
 Judge helpful bỏ sót 21/30 lỗi trong nhãn người: 18 lỗi sai tiền và 3 lỗi xưng hô. Precision 1.0 không bù được recall 0.3 và kappa 0.375, nên không dùng judge này làm gate. Tone chỉ được kết luận đạt cho tiêu chí tone trên dữ liệu replay đã kiểm. Các phép tính hiệu chỉnh dùng lại dữ liệu calibration, không phải bằng chứng độc lập trên dữ liệu mới.
 
-Ở thời điểm chốt M2, chưa cài paired bootstrap, pass@k/pass^k, hai grader M3 hay metric FM-08. Bạn đã đồng ý commit M2 và thực hiện M3. Chưa tạo baseline và chưa push.
+Ở thời điểm chốt M2, chưa cài paired bootstrap, pass@k/pass^k, hai grader M3 hay metric FM-08. Bạn đã đồng ý commit M2 và thực hiện M3; trợ lý đã lưu M2 trong commit **`e83c822` — `feat: calibrate replay judges and audit disagreements`**. Chưa tạo baseline và chưa push.
 
 ### Việc bạn cần làm sau M2
 
@@ -147,15 +147,81 @@ $labPython = '\\?\' + (Join-Path (Get-Location).Path '.venv\Scripts\python.exe')
 & $labPython -m pytest -q -m student -o addopts= tests/test_lab9_stats.py tests/test_lab9_judge_calibration.py -k 'not bootstrap'
 ```
 
+## M3 — Grader tiền, approval và tính nhất quán của reply
+
+### Trợ lý đã làm với sự đồng ý của bạn
+
+1. Hoàn thành `ApprovalBypass`: báo vi phạm khi có khoản hoàn dù nhãn cho biết approval không hợp lệ, hoặc có dòng ledger ghi ngoài claim được yêu cầu. True là có vi phạm, khác với các metric năng lực.
+2. Hoàn thành `RefundAmountCorrect`: đối chiếu khoản tiền thực ghi trong ledger với nhãn; không lấy câu trả lời làm bằng chứng đã chuyển tiền.
+3. Thêm `ReplyLedgerConsistent` và đăng ký metric `reply_ledger_consistent`, blocking với min 1.0. Grader đọc các event reply, chuẩn hóa số tiền có đơn vị rồi so với ledger; không nhận diện tên variant hay khớp nguyên câu mẫu.
+4. Thêm test cho định dạng tiền, câu diễn đạt khác nhưng đúng, lời báo tiền khi ledger bằng 0, thiếu text và case FM-08 thật qua agent. Bộ test ban đầu đạt 47 test nhưng phép đo phát hiện chỉ đạt 75%, báo nhầm 0%.
+5. Tìm ra case C-013: proposal bị trừ từ 35.000đ thành 0đ nhưng ledger 0đ và câu từ chối vẫn đúng. Trợ lý đã hỏi riêng và nhận được đồng ý của bạn trước khi bổ sung `ProposalAmountCorrect` cùng metric `proposal_amount_correct` chẩn đoán, không blocking. Không gộp lỗi proposal vào FM-08, không hạ mục tiêu ≥80% của đề.
+6. Bổ sung test cho C-013, proposal hợp lệ khác số tiền được ghi sau khấu trừ và proposal bị thiếu. Chạy lại phép đo sau thay đổi: đạt 100% phát hiện và 0% báo nhầm.
+7. Sinh `src/reports/eval_m3_misreport.json` qua harness gốc bằng công tắc misreport có sẵn. Chỉ đăng ký shape kiểm chứng trong bộ nhớ; không sửa variant hoặc report bằng tay. Lưu nguyên output phép đo gốc vào `src/reports/m3_detection.txt`.
+8. Cập nhật `docs/failure_taxonomy.md` với grader đã triển khai, kết quả, cách đo và giới hạn. Metric spec hiện là 1.2, eval set vẫn v1. Đã so với spec gốc và xác nhận 7 metric ban đầu, toàn bộ ngưỡng, seeds và bootstrap không đổi.
+
+### Vướng mắc môi trường đã xử lý
+
+Hai lần chạy harness đầu tiên bị kẹt trước khi agent sinh trace. Phép thử tối giản và traceback cho thấy asyncio dừng ở `socketpair` nội bộ Windows trong sandbox. Trợ lý đã dừng các tiến trình bị kẹt rồi chạy lại với quyền thực thi ngoài sandbox; asyncio hoạt động và phép đo hoàn tất. Không sửa harness, dữ liệu, cấu hình Windows hay cách chấm để xử lý việc này.
+
+### Kết quả kiểm tra M3
+
+| Kiểm tra | Kết quả thực tế |
+|---|---|
+| Test đã hoàn thành tới M3 | **50 passed, 319 deselected**, với bộ lọc `lab9 and not advanced and not bootstrap`; chưa chạy hai test bootstrap M4 |
+| Phép đo trước khi bổ sung proposal | Detection 75.00%, false alarms 0.00%; chưa đạt sàn 80% |
+| Phép đo sau khi bổ sung được bạn duyệt | **Detection 100.00%, false alarms 0.00%, exit 0**, bằng `lab9.mutation --detect` gốc |
+| Kiểm chứng riêng FM-08 | Report `E-m3_misreport-20261118-8b26`, 14 item × 5 seed; pass_rate=1.0, refund_amount_correct=1.0, proposal_amount_correct=1.0, reply_ledger_consistent=0.8571 |
+| Spec | Chỉ thêm hai metric đã được duyệt; bảy metric và ngưỡng gốc giữ nguyên; metric spec 1.2, eval set SHA vẫn `8b262652f4bf` |
+| Kiểm tra cuối M3 | Report có 70 cặp item/seed không trùng, không có evaluator failure; bắt đủ 10 reply lệch ledger ở C-008/C-014; `git diff --check` sạch; mã Lab 8, harness, variant, test công khai và dữ liệu giữ nguyên |
+
+Report FM-08 cho thấy ledger và nhãn có thể khớp trong khi lời báo số tiền vẫn sai. Ngược lại, C-013 chỉ sai proposal và cần grader khác để giải thích đúng nguyên nhân. `proposal_amount_correct` là chẩn đoán, min 0.95 và không blocking; `reply_ledger_consistent` là điều kiện chặn, min 1.0.
+
+Reply của lab mô tả một khoản hoàn hiện tại. Grader FM-08 hỗ trợ số nguyên VND và dấu phân nhóm hàng nghìn thông thường; chưa diễn giải tiền bằng chữ hay nhiều khoản tiền có ý nghĩa khác nhau trong cùng câu. Swarm gốc không có event reply: metric trả True vì không có khẳng định tiền để đối chiếu, không có nghĩa đã kiểm chứng lời trả lời của swarm. Grader kết quả và trace contract vẫn cần thiết.
+
+Ở thời điểm chốt M3, chưa cài paired bootstrap, tạo baseline M4, chạy gate hay hoàn thiện eval card/PRD/harness map của Core. Bạn đã đồng ý commit M3 và thực hiện M4 cùng tài liệu Core. Chưa push.
+
+### Việc bạn cần làm sau M3
+
+- Đọc phần M3 trong `docs/failure_taxonomy.md` để phân biệt approval, proposal, tiền được ghi và tiền agent báo. Với C-008, proposal 35.000đ nhưng ledger chỉ ghi 20.000đ do approval; reply phải báo 20.000đ.
+- Có thể chạy lại test và lệnh detect bên dưới. Kết quả cần là test xanh, detection ít nhất 80% và false alarms không quá 10%.
+- Bạn đã đồng ý commit M3 và thực hiện M4 cùng tài liệu Core. Việc bật Actions và kiểm tra hạn LMS vẫn làm theo hướng dẫn M0.
+
+### Cách tái hiện M3 trên máy
+
+Từ thư mục gốc repo, mở PowerShell thông thường và chạy:
+
+```powershell
+cd src
+$labPython = '\\?\' + (Join-Path (Get-Location).Path '.venv\Scripts\python.exe')
+& $labPython -m pytest -q -m student -o addopts= -k 'lab9 and not advanced and not bootstrap'
+& $labPython -m lab9.mutation --detect
+```
+
+Để sinh lại report kiểm chứng riêng FM-08, tiếp tục tại `src/`:
+
+```powershell
+$labReplay = @'
+from lab8.shapes import SHAPES
+from lab9.variant_agent import make_shape
+from lab9.eval import main
+SHAPES['m3_misreport'] = make_shape('m3_misreport', {'no_override', 'misreport'})
+raise SystemExit(main(['--shape', 'm3_misreport', '--out', 'reports/eval_m3_misreport.json']))
+'@
+& $labPython -c $labReplay
+```
+
+Đây là report kiểm chứng M3, không dùng thay baseline swarm của M4. Hai report M3 bị `.gitignore` bỏ qua; bạn đã đồng ý force-add đúng hai report này khi commit M3. Không sửa tay report.
+
 ## Trạng thái các mốc
 
 | Bước | Việc cần làm theo đề | Trạng thái |
 |---|---|---|
 | M1 | Taxonomy ít nhất 5 FM, phân tích trace, gắn failure_modes và kiểm tra eval set | Đã commit `0450710`; các kiểm tra công khai đạt; chưa đối chiếu key 5 anchor riêng |
-| M2 | Confusion, precision/recall, kappa, Rogan–Gladen và audit ít nhất 5 bất đồng | Đã đạt kiểm tra M2, audit 12 case; bạn đã duyệt commit |
-| M3 | Hai grader TODO và metric FM-08; regression test FM-03 đã có ở M1 | Bạn đã đồng ý; chuẩn bị thực hiện sau commit M2 |
-| M4 | Paired bootstrap, baseline swarm, fixed qua gate, seeded_regression bị chặn | Chưa xin phép thực hiện |
-| Tài liệu Core | Eval card, PRD v1.1 và section eval trong harness_map | Chưa xin phép thực hiện |
+| M2 | Confusion, precision/recall, kappa, Rogan–Gladen và audit ít nhất 5 bất đồng | Đã commit `e83c822`, test M2 đạt và audit 12 case |
+| M3 | Hai grader TODO, metric FM-08 và grader proposal chẩn đoán bạn đã duyệt | Đạt 50 test, detection 100%, false alarms 0%; bạn đã duyệt commit |
+| M4 | Paired bootstrap, baseline swarm, fixed qua gate, seeded_regression bị chặn | Bạn đã đồng ý; chuẩn bị thực hiện sau commit M3 |
+| Tài liệu Core | Eval card, PRD v1.1 và section eval trong harness_map | Bạn đã đồng ý; điền theo report M4 thực tế |
 | M5–M6 | Eval set v2, slice gate, pass@k/pass^k và A/A | Chưa xin phép thực hiện |
 | M7 | Integrity check, ratchet và kiểm tra traps | Chưa xin phép thực hiện |
 | Nộp bài | Commit report, push, PR trong fork, CI xanh, merge main và nộp link trên LMS | Chưa xin phép thực hiện |
